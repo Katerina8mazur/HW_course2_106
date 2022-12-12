@@ -21,11 +21,11 @@ namespace HttpServer_1.ORM
         public Account? Get(int id)
             => orm.Select<Account>(id);
 
-        public bool Check(string login, string password)
+        public int Check(string login, string password)
         {
             var accounts = GetAll();
             var account = accounts.FirstOrDefault(a => a.Login == login && a.Password == password);
-            return account != null;
+            return (account != null) ? account.Id : -1;
         }
 
         public void Insert(string login, string password)

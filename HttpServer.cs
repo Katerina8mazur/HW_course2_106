@@ -1,4 +1,5 @@
 ﻿using HttpServer_1.Attributes;
+using HttpServer_1.Controllers;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mime;
@@ -170,12 +171,18 @@ namespace HttpServer_1
                                 .Select((p, i) => Convert.ChangeType(strParams[i], p.ParameterType))
                                 .ToArray();
 
-            var ret = method.Invoke(Activator.CreateInstance(controller), queryParams);
+            var methodResponse = (MethodResponse)method.Invoke(Activator.CreateInstance(controller), queryParams);
 
             response.ContentType = "Application/json";
 
-            byte[] buffer = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(ret));
+            byte[] buffer = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(methodResponse.Response));
             response.ContentLength64 = buffer.Length;
+
+            if (methodResponse.Cookie != null)
+                response.Cookies.Add(methodResponse.Cookie);
+
+            //if (method.Name == "Login")
+            //    response.Cookies.Add(new Cookie("NAME", "VALUE"));
 
             // if (_httpContext.Request.HttpMethod == "POST")
             //    response.Redirect("https://store.steampowered.com/");

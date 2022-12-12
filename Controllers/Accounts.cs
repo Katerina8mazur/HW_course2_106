@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,16 +21,19 @@ namespace HttpServer_1.Controllers
         private static AccountDAO accountDAO = new AccountDAO(connectionString);
 
         [HttpGET(@"\d+")]
-        public Account? GetAccountById(int id)
-            => accountDAO.Get(id);
+        public MethodResponse<Account?> GetAccountById(int id)
+            => new MethodResponse<Account?>(accountDAO.Get(id));
 
         [HttpGET("")]
-        public List<Account> GetAccounts()
-            => accountDAO.GetAll();
+        public MethodResponse<List<Account>>  GetAccounts()
+            => new MethodResponse<List<Account>>(accountDAO.GetAll());
 
         [HttpPOST("save")]
-        public void SaveAccount(string login, string password)
-            => accountDAO.Insert(login, password);
+        public MethodResponse SaveAccount(string login, string password)
+        {
+            accountDAO.Insert(login, password);
+            return new MethodResponse();
+        }
 
         //Get /accounts/ - список аккаунтов в формате json
         //Get /accounts/{id} - информация об одном аккаунте
@@ -38,9 +42,15 @@ namespace HttpServer_1.Controllers
         //надо брать все данные из бд
 
         [HttpPOST("")]
-        public bool Login(string login, string password)
+        public MethodResponse<bool> Login(string login, string password)
         {
-            return accountDAO.Check(login, password);
+            var accountId = accountDAO.Check(login, password);
+
+            Cookie? cookie = null;
+            if (accountId >= 0)
+                cookie = new Cookie("SessionId", $"{{IsAuthorize: true, Id={accountId} }}");
+
+            return new MethodResponse<bool>(accountId > 0, cookie);
         }
     }
 }
