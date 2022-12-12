@@ -177,8 +177,8 @@ namespace HttpServer_1
             byte[] buffer = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(ret));
             response.ContentLength64 = buffer.Length;
 
-            if (_httpContext.Request.HttpMethod == "POST")
-                response.Redirect("https://store.steampowered.com/");
+            // if (_httpContext.Request.HttpMethod == "POST")
+            //    response.Redirect("https://store.steampowered.com/");
 
             Stream output = response.OutputStream;
             output.Write(buffer, 0, buffer.Length);

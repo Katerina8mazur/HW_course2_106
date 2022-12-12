@@ -3,6 +3,7 @@ using HttpServer_1.Models;
 using HttpServer_1.ORM;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace HttpServer_1.Controllers
         public List<Account> GetAccounts()
             => accountDAO.GetAll();
 
-        [HttpPOST("")]
+        [HttpPOST("save")]
         public void SaveAccount(string login, string password)
             => accountDAO.Insert(login, password);
 
@@ -35,5 +36,11 @@ namespace HttpServer_1.Controllers
         //Post /accounts/ - добавлять инф на сервер - принимает параметры через body
 
         //надо брать все данные из бд
+
+        [HttpPOST("")]
+        public bool Login(string login, string password)
+        {
+            return accountDAO.Check(login, password);
+        }
     }
 }
