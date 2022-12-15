@@ -163,6 +163,21 @@ namespace HttpServer_1
 
             if (method == null) return false;
 
+            if (method.GetCustomAttribute(typeof(OnlyForAuthorized)) != null)
+            {
+                var cookie = request.Cookies.FirstOrDefault(c => c.Name == "SessionId");
+                if (cookie == null)
+                {
+                    response.StatusCode = 401;
+                    byte[] bufferError = Encoding.ASCII.GetBytes("ERROR 401: Not authorized.");
+                    Stream outputError = response.OutputStream;   
+                    outputError.Write(bufferError, 0, bufferError.Length);
+
+                    outputError.Close();
+                    return true;
+                }
+            }
+
             // ["name", "15", "42"]
             // int Method(string name, int age, int id)
 

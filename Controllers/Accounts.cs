@@ -25,6 +25,7 @@ namespace HttpServer_1.Controllers
             => new MethodResponse<Account?>(accountDAO.Get(id));
 
         [HttpGET("")]
+        [OnlyForAuthorized]
         public MethodResponse<List<Account>>  GetAccounts()
             => new MethodResponse<List<Account>>(accountDAO.GetAll());
 
