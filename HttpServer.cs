@@ -163,8 +163,18 @@ namespace HttpServer_1
 
             if (method == null) return false;
 
+            // ["name", "15", "42"]
+            // int Method(string name, int age, int id)
+
+            // ["name", 15, 42]
+            object[] queryParams = method.GetParameters()
+                                .Take(strParams.Length)
+                                .Select((p, i) => Convert.ChangeType(strParams[i], p.ParameterType))
+                                .ToArray();
+
             if (method.GetCustomAttribute(typeof(OnlyForAuthorized)) != null)
             {
+                var attribute = method.GetCustomAttribute(typeof(OnlyForAuthorized)) as OnlyForAuthorized;
                 var cookie = request.Cookies.FirstOrDefault(c => c.Name == "SessionId");
                 if (cookie == null)
                 {
@@ -176,15 +186,19 @@ namespace HttpServer_1
                     outputError.Close();
                     return true;
                 }
+
+                if (attribute.NeedAccountId)
+                {
+                    // SessionId = IsAuthorize:true
+                    // Id = 2
+
+                    var accountIdCookie = request.Cookies.FirstOrDefault(c => c.Name == "Id");
+                    var accountId = int.Parse(accountIdCookie.Value);
+                    queryParams = queryParams
+                        .Append(accountId)
+                        .ToArray();
+                }
             }
-
-            // ["name", "15", "42"]
-            // int Method(string name, int age, int id)
-
-            // ["name", 15, 42]
-            object[] queryParams = method.GetParameters()
-                                .Select((p, i) => Convert.ChangeType(strParams[i], p.ParameterType))
-                                .ToArray();
 
             var methodResponse = (MethodResponse)method.Invoke(Activator.CreateInstance(controller), queryParams);
 

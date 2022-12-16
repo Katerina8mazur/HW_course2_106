@@ -20,16 +20,16 @@ namespace HttpServer_1.Controllers
         private static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=SteamDB;Integrated Security=True";
         private static AccountDAO accountDAO = new AccountDAO(connectionString);
 
-        [HttpGET(@"\d+")]
+        [HttpGET(@"^\d+$")]
         public MethodResponse<Account?> GetAccountById(int id)
             => new MethodResponse<Account?>(accountDAO.Get(id));
 
-        [HttpGET("")]
+        [HttpGET("^$")]
         [OnlyForAuthorized]
         public MethodResponse<List<Account>>  GetAccounts()
             => new MethodResponse<List<Account>>(accountDAO.GetAll());
 
-        [HttpPOST("save")]
+        [HttpPOST("^save$")]
         public MethodResponse SaveAccount(string login, string password)
         {
             accountDAO.Insert(login, password);
@@ -42,16 +42,21 @@ namespace HttpServer_1.Controllers
 
         //надо брать все данные из бд
 
-        [HttpPOST("")]
+        [HttpPOST("^$")]
         public MethodResponse<bool> Login(string login, string password)
         {
             var accountId = accountDAO.Check(login, password);
 
             Cookie? cookie = null;
             if (accountId >= 0)
-                cookie = new Cookie("SessionId", $"{{IsAuthorize: true, Id={accountId} }}");
+                cookie = new Cookie("SessionId", $"IsAuthorize:true,Id={accountId}");
 
-            return new MethodResponse<bool>(accountId > 0, cookie);
+            return new MethodResponse<bool>(accountId >= 0, cookie);
         }
+
+        [HttpGET("^info$")]
+        [OnlyForAuthorized(needAccountId: true)]
+        public MethodResponse<Account> GetAccountInfo(string _, int id)
+            => GetAccountById(id);
     }
 }
