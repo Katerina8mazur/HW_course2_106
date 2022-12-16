@@ -176,7 +176,7 @@ namespace HttpServer_1
             {
                 var attribute = method.GetCustomAttribute(typeof(OnlyForAuthorized)) as OnlyForAuthorized;
                 var cookie = request.Cookies.FirstOrDefault(c => c.Name == "SessionId");
-                if (cookie == null)
+                if (cookie == null || !SessionManager.CheckSession(Guid.Parse(cookie.Value)))
                 {
                     response.StatusCode = 401;
                     byte[] bufferError = Encoding.ASCII.GetBytes("ERROR 401: Not authorized.");
@@ -192,8 +192,8 @@ namespace HttpServer_1
                     // SessionId = IsAuthorize:true
                     // Id = 2
 
-                    var accountIdCookie = request.Cookies.FirstOrDefault(c => c.Name == "Id");
-                    var accountId = int.Parse(accountIdCookie.Value);
+                    var session = SessionManager.GetSession(Guid.Parse(cookie.Value));
+                    var accountId = session.AccountId;
                     queryParams = queryParams
                         .Append(accountId)
                         .ToArray();

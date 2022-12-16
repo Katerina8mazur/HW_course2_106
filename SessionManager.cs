@@ -11,12 +11,13 @@ namespace HttpServer_1
     {
         private static MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
-        public static void CreateSession(int accountId, string login)
+        public static Session CreateSession(int accountId, string login)
         {
             // cache.Set(key, value)
 
             var session = new Session(Guid.NewGuid(), accountId, login, DateTime.Now);
             cache.Set(session.Id, session, new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(2)));
+            return session;
         }
 
         public static bool CheckSession(Guid id) 

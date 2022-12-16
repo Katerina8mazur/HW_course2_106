@@ -57,3 +57,9 @@ C:\Users\1\source\repos\inf 2022-2023\week_9\obj\Debug\net6.0\refint\HttpServer_
 C:\Users\1\source\repos\inf 2022-2023\week_9\obj\Debug\net6.0\HttpServer_1.pdb
 C:\Users\1\source\repos\inf 2022-2023\week_9\obj\Debug\net6.0\HttpServer_1.genruntimeconfig.cache
 C:\Users\1\source\repos\inf 2022-2023\week_9\obj\Debug\net6.0\ref\HttpServer_1.dll
+C:\Users\1\source\repos\inf 2022-2023\week_9\bin\Debug\net6.0\Microsoft.Extensions.Caching.Abstractions.dll
+C:\Users\1\source\repos\inf 2022-2023\week_9\bin\Debug\net6.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\1\source\repos\inf 2022-2023\week_9\bin\Debug\net6.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\1\source\repos\inf 2022-2023\week_9\bin\Debug\net6.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\1\source\repos\inf 2022-2023\week_9\bin\Debug\net6.0\Microsoft.Extensions.Options.dll
+C:\Users\1\source\repos\inf 2022-2023\week_9\bin\Debug\net6.0\Microsoft.Extensions.Primitives.dll

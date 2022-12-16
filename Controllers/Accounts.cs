@@ -49,7 +49,10 @@ namespace HttpServer_1.Controllers
 
             Cookie? cookie = null;
             if (accountId >= 0)
-                cookie = new Cookie("SessionId", $"IsAuthorize:true,Id={accountId}");
+            {
+                var session = SessionManager.CreateSession(accountId, login);
+                cookie = new Cookie("SessionId", session.Id.ToString());
+            }    
 
             return new MethodResponse<bool>(accountId >= 0, cookie);
         }
